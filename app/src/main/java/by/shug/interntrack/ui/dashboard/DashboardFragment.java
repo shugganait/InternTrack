@@ -1,29 +1,20 @@
 package by.shug.interntrack.ui.dashboard;
 
-import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-
 import by.shug.interntrack.databinding.FragmentDashboardBinding;
+import by.shug.interntrack.base.BaseFragment;
 
-public class DashboardFragment extends Fragment {
+public class DashboardFragment extends BaseFragment<FragmentDashboardBinding> {
 
-    private FragmentDashboardBinding binding;
-
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-        binding = FragmentDashboardBinding.inflate(inflater, container, false);
-
-        return binding.getRoot();
+    @Override
+    protected FragmentDashboardBinding inflateBinding(LayoutInflater inflater, ViewGroup container) {
+        return FragmentDashboardBinding.inflate(getLayoutInflater());
     }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
+    protected void uiBox() {
+
     }
 }
