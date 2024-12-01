@@ -9,6 +9,8 @@ import by.shug.interntrack.databinding.FragmentLoginBinding;
 
 public class LoginFragment extends BaseFragment<FragmentLoginBinding> {
 
+    private FragmentLoginBinding binding;
+
     @Override
     protected FragmentLoginBinding inflateBinding(LayoutInflater inflater, ViewGroup container) {
         return FragmentLoginBinding.inflate(getLayoutInflater());
@@ -16,6 +18,6 @@ public class LoginFragment extends BaseFragment<FragmentLoginBinding> {
 
     @Override
     protected void uiBox() {
-
+        binding = getBinding();
     }
 }

@@ -3,10 +3,12 @@ package by.shug.interntrack.ui.dashboard;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-import by.shug.interntrack.databinding.FragmentDashboardBinding;
 import by.shug.interntrack.base.BaseFragment;
+import by.shug.interntrack.databinding.FragmentDashboardBinding;
 
 public class DashboardFragment extends BaseFragment<FragmentDashboardBinding> {
+
+    private FragmentDashboardBinding binding;
 
     @Override
     protected FragmentDashboardBinding inflateBinding(LayoutInflater inflater, ViewGroup container) {
@@ -15,6 +17,7 @@ public class DashboardFragment extends BaseFragment<FragmentDashboardBinding> {
 
     @Override
     protected void uiBox() {
-
+        binding = getBinding();
+        binding.tvText.setText("HELOOOOOOOOOOOOOOOOOOOOOO");
     }
 }

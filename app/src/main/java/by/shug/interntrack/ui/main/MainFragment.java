@@ -8,6 +8,8 @@ import by.shug.interntrack.base.BaseFragment;
 
 public class MainFragment extends BaseFragment<FragmentMainBinding> {
 
+    private FragmentMainBinding binding;
+
     @Override
     protected FragmentMainBinding inflateBinding(LayoutInflater inflater, ViewGroup container) {
         return FragmentMainBinding.inflate(getLayoutInflater());
@@ -15,6 +17,6 @@ public class MainFragment extends BaseFragment<FragmentMainBinding> {
 
     @Override
     protected void uiBox() {
-
+        binding = getBinding();
     }
 }
