@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">СтажМастер</string>
+    <string name="title_main">Main</string>
+    <string name="title_dashboard">Dashboard</string>
+</resources>
