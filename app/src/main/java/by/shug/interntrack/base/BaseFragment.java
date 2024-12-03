@@ -8,21 +8,25 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.viewbinding.ViewBinding;
 
-public abstract class BaseFragment<VB extends ViewBinding> extends Fragment {
+public abstract class BaseFragment<VB extends ViewBinding, VM extends ViewModel> extends Fragment {
 
     private VB binding;
+    protected VM viewModel;
 
-    protected VB getBinding() {
+    protected VB binding() {
         if (binding == null) {
             throw new IllegalStateException("Binding is not initialized");
         }
         return binding;
     }
 
-    // Метод для инфлейта binding
     protected abstract VB inflateBinding(LayoutInflater inflater, ViewGroup container);
+
+    protected abstract Class<VM> getViewModelClass();
 
     @Nullable
     @Override
@@ -34,6 +38,7 @@ public abstract class BaseFragment<VB extends ViewBinding> extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        viewModel = new ViewModelProvider(this).get(getViewModelClass()); // Инициализация ViewModel
         uiBox();
     }
 

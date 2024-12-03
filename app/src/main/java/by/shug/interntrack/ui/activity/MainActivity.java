@@ -1,4 +1,4 @@
-package by.shug.interntrack;
+package by.shug.interntrack.ui.activity;
 
 import android.os.Bundle;
 import android.view.View;
@@ -9,9 +9,14 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
+import by.shug.interntrack.R;
 import by.shug.interntrack.databinding.ActivityMainBinding;
+import dagger.hilt.android.AndroidEntryPoint;
 
+@AndroidEntryPoint
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
@@ -23,19 +28,19 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        BottomNavigationView navView = findViewById(R.id.nav_view);
-//        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-//                R.id.navigation_main, R.id.navigation_dashboard)
-//                .build();
-
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
         NavigationUI.setupWithNavController(binding.navView, navController);
 
-        //Слушатель чтобы BottomNavigation скрывался при дпо экранах
-        bottomVisibilityListener(navController, navView);
+        //Слушатель чтобы BottomNavigation скрывался при доп экранах
+        bottomVisibilityListener(navController, binding.navView);
 
-        // Начальный фрагмент
-        navController.navigate(R.id.loginFragment);
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) {
+            navController.navigate(R.id.authFragment);
+        }
+        if ( user != null && !user.isEmailVerified()) {
+            navController.navigate(R.id.authFragment);
+        }
     }
 
     private void bottomVisibilityListener(NavController navController, BottomNavigationView navView) {

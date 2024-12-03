@@ -5,10 +5,10 @@ import android.view.ViewGroup;
 
 import by.shug.interntrack.databinding.FragmentMainBinding;
 import by.shug.interntrack.base.BaseFragment;
+import dagger.hilt.android.AndroidEntryPoint;
 
-public class MainFragment extends BaseFragment<FragmentMainBinding> {
-
-    private FragmentMainBinding binding;
+@AndroidEntryPoint
+public class MainFragment extends BaseFragment<FragmentMainBinding, MainViewModel> {
 
     @Override
     protected FragmentMainBinding inflateBinding(LayoutInflater inflater, ViewGroup container) {
@@ -16,7 +16,12 @@ public class MainFragment extends BaseFragment<FragmentMainBinding> {
     }
 
     @Override
+    protected Class<MainViewModel> getViewModelClass() {
+        return MainViewModel.class;
+    }
+
+    @Override
     protected void uiBox() {
-        binding = getBinding();
+
     }
 }

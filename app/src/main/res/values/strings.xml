@@ -4,4 +4,29 @@
     <string name="title_dashboard">Dashboard</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="login">E-mail</string>
+    <string name="group">Группа</string>
+    <string name="phone_number">Номер телефона</string>
+    <string name="fio">ФИО</string>
+    <string name="password">Пароль</string>
+    <string name="repeat_password">Повторите пароль</string>
+    <string name="create_acc">Создайте аккаунт</string>
+    <string name="log_in_acc">Войти в аккаунт</string>
+    <string name="login_as_admin"><u>Войти как администратор</u></string>
+    <string name="login_as_student"><u>Войти как студент</u></string>
+    <string name="reg_as_admin"><u>Зарегистрироваться как администратор</u></string>
+    <string name="reg_as_student"><u>Зарегистрироваться как студент</u></string>
+    <string name="not_have_an_account"><u>Ещё нет аккаунта?</u></string>
+    <string name="got_account"><u>У вас уже есть аккаунт ?</u></string>
+    <string name="next">Далее</string>
+    <string name="xxxxxx">xxxxxx</string>
+    <string name="enter_otp">Введите код отправленный на вашу почту</string>
+    <string name="sent_link_ver">На вашу почту отправлена ссылка\nдля подтверждения</string>
+    <string name="aiting">После подтверждения\nвы можете войти в аккаунт</string>
+    <string name="ok">OK</string>
+    <string name="dashboard">Личный кабинет</string>
+    <string name="please_login">Вы не авторизовались, чтобы получить доступ, пожалуйста авторизуйтесь</string>
+    <string name="btn_login">Войти</string>
+    <string name="dots">.....................</string>
+    <string name="save">Сохранить</string>
 </resources>

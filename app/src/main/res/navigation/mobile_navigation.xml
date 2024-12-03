@@ -17,8 +17,8 @@
         android:label="@string/title_dashboard"
         tools:layout="@layout/fragment_dashboard" />
     <fragment
-        android:id="@+id/loginFragment"
-        android:name="by.shug.interntrack.ui.login.LoginFragment"
-        android:label="fragment_login"
-        tools:layout="@layout/fragment_login" />
+        android:id="@+id/authFragment"
+        android:name="by.shug.interntrack.ui.auth.AuthFragment"
+        android:label="fragment_auth"
+        tools:layout="@layout/fragment_auth" />
 </navigation>
