@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
         if (user == null) {
             navController.navigate(R.id.authFragment);
         }
-        if ( user != null && !user.isEmailVerified()) {
+        if (user != null && !user.isEmailVerified()) {
             navController.navigate(R.id.authFragment);
         }
     }

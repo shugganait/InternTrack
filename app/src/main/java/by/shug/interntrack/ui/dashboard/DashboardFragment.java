@@ -52,7 +52,7 @@ public class DashboardFragment extends BaseFragment<FragmentDashboardBinding, Da
 
     @Override
     protected void uiBox() {
-        navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_activity_main);
+        navController = Navigation.findNavController(getBinding.getRoot());
         checkIsAuth();
         setUserData();
         initListener();
@@ -60,8 +60,8 @@ public class DashboardFragment extends BaseFragment<FragmentDashboardBinding, Da
 
     private void setUserData() {
         if (isAuth) {
-            if (binding().etLogin.getText().toString().isEmpty()) {
-                binding().loadingContainer.setVisibility(View.VISIBLE);
+            if (getBinding.etLogin.getText().toString().isEmpty()) {
+                getBinding.loadingContainer.setVisibility(View.VISIBLE);
                 viewModel.getUserData().addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
                         // Данные найдены
@@ -73,16 +73,16 @@ public class DashboardFragment extends BaseFragment<FragmentDashboardBinding, Da
                             group = (String) userData.get(GROUP);
                             status = (String) userData.get(STATUS);
 
-                            binding().etLogin.setText(email);
-                            binding().etFio.setText(fullName);
-                            binding().etGroup.setText(group);
-                            binding().etPhone.setText(phone);
+                            getBinding.etLogin.setText(email);
+                            getBinding.etFio.setText(fullName);
+                            getBinding.etGroup.setText(group);
+                            getBinding.etPhone.setText(phone);
                             if (status.equals("admin")) {
-                                binding().tvStatus.setText("Админ*");
+                                getBinding.tvStatus.setText("Админ*");
                             } else {
-                                binding().tvStatus.setText("Студент*");
+                                getBinding.tvStatus.setText("Студент*");
                             }
-                            binding().loadingContainer.setVisibility(View.GONE);
+                            getBinding.loadingContainer.setVisibility(View.GONE);
                         }
                     } else {
                         Log.e("Firestore", "Данные отсутствуют");
@@ -93,54 +93,54 @@ public class DashboardFragment extends BaseFragment<FragmentDashboardBinding, Da
     }
 
     private void initListener() {
-        binding().btnLogout.setOnClickListener(v -> {
+        getBinding.btnLogout.setOnClickListener(v -> {
             viewModel.logout();
             checkIsAuth();
         });
-        binding().btnLogin.setOnClickListener(v -> navController.navigate(R.id.authFragment));
-        binding().btnSave.setOnClickListener(v -> updateUserData());
-        binding().etPhone.addTextChangedListener(new TextWatcher() {
+        getBinding.btnLogin.setOnClickListener(v -> navController.navigate(R.id.authFragment));
+        getBinding.btnSave.setOnClickListener(v -> updateUserData());
+        getBinding.etPhone.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
             @Override
             public void onTextChanged(CharSequence charSequence, int start, int before, int count) {}
             @Override
             public void afterTextChanged(Editable editable) {
-                String changedPhone = binding().etPhone.getText().toString();
+                String changedPhone = getBinding.etPhone.getText().toString();
                 if (!Objects.equals(phone, changedPhone)) {
-                    binding().btnSave.setVisibility(View.VISIBLE);
+                    getBinding.btnSave.setVisibility(View.VISIBLE);
                 } else {
-                    binding().btnSave.setVisibility(View.GONE);
+                    getBinding.btnSave.setVisibility(View.GONE);
                 }
             }
         });
-        binding().etGroup.addTextChangedListener(new TextWatcher() {
+        getBinding.etGroup.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
             @Override
             public void onTextChanged(CharSequence charSequence, int start, int before, int count) {}
             @Override
             public void afterTextChanged(Editable editable) {
-                String changedGroup = binding().etGroup.getText().toString();
+                String changedGroup = getBinding.etGroup.getText().toString();
                 if (!Objects.equals(group, changedGroup)) {
-                    binding().btnSave.setVisibility(View.VISIBLE);
+                    getBinding.btnSave.setVisibility(View.VISIBLE);
                 } else {
-                    binding().btnSave.setVisibility(View.GONE);
+                    getBinding.btnSave.setVisibility(View.GONE);
                 }
             }
         });
-        binding().etFio.addTextChangedListener(new TextWatcher() {
+        getBinding.etFio.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
             @Override
             public void onTextChanged(CharSequence charSequence, int start, int before, int count) {}
             @Override
             public void afterTextChanged(Editable editable) {
-                String changedFullName = binding().etFio.getText().toString();
+                String changedFullName = getBinding.etFio.getText().toString();
                 if (!Objects.equals(fullName, changedFullName)) {
-                    binding().btnSave.setVisibility(View.VISIBLE);
+                    getBinding.btnSave.setVisibility(View.VISIBLE);
                 } else {
-                    binding().btnSave.setVisibility(View.GONE);
+                    getBinding.btnSave.setVisibility(View.GONE);
                 }
             }
         });
@@ -148,10 +148,10 @@ public class DashboardFragment extends BaseFragment<FragmentDashboardBinding, Da
 
     private void updateUserData() {
         closeKeyboard(requireActivity());
-        binding().loadingContainer.setVisibility(View.VISIBLE);
-        String newPhone = binding().etPhone.getText().toString();
-        String newName = binding().etFio.getText().toString();
-        String newGroup = binding().etGroup.getText().toString();
+        getBinding.loadingContainer.setVisibility(View.VISIBLE);
+        String newPhone = getBinding.etPhone.getText().toString();
+        String newName = getBinding.etFio.getText().toString();
+        String newGroup = getBinding.etGroup.getText().toString();
 
         phone = newPhone;
         fullName = newName;
@@ -169,8 +169,8 @@ public class DashboardFragment extends BaseFragment<FragmentDashboardBinding, Da
                 } else {
                     showToast("Ошибка при обновлении данных, попробуйте позже");
                 }
-                binding().loadingContainer.setVisibility(View.GONE);
-                binding().btnSave.setVisibility(View.GONE);
+                getBinding.loadingContainer.setVisibility(View.GONE);
+                getBinding.btnSave.setVisibility(View.GONE);
             });
         }
     }
@@ -178,11 +178,10 @@ public class DashboardFragment extends BaseFragment<FragmentDashboardBinding, Da
     private void checkIsAuth() {
         if (viewModel.getCurrentUser() != null && viewModel.getCurrentUser().isEmailVerified()) {
             isAuth = true;
-            binding().loginSuggest.setVisibility(View.GONE);
+            getBinding.loginSuggest.setVisibility(View.GONE);
         } else {
             isAuth = false;
-            binding().loginSuggest.setVisibility(View.VISIBLE);
-
+            getBinding.loginSuggest.setVisibility(View.VISIBLE);
         }
     }
 

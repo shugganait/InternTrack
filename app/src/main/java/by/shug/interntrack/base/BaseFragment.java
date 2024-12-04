@@ -16,13 +16,7 @@ public abstract class BaseFragment<VB extends ViewBinding, VM extends ViewModel>
 
     private VB binding;
     protected VM viewModel;
-
-    protected VB binding() {
-        if (binding == null) {
-            throw new IllegalStateException("Binding is not initialized");
-        }
-        return binding;
-    }
+    protected  VB getBinding;
 
     protected abstract VB inflateBinding(LayoutInflater inflater, ViewGroup container);
 
@@ -38,6 +32,7 @@ public abstract class BaseFragment<VB extends ViewBinding, VM extends ViewModel>
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        getBinding = binding;
         viewModel = new ViewModelProvider(this).get(getViewModelClass()); // Инициализация ViewModel
         uiBox();
     }

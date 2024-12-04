@@ -47,26 +47,26 @@ public class AuthFragment extends BaseFragment<FragmentAuthBinding, AuthViewMode
 
     @Override
     protected void uiBox() {
-        navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_activity_main);
+        navController = Navigation.findNavController(getBinding.getRoot());
         initListeners();
     }
 
     private void initListeners() {
-        binding().tvRgOrLog.setOnClickListener(v -> setVisibleRegOrLog());
-        binding().tvChangeStatusReg.setOnClickListener(v -> setStatus());
-        binding().btnNext.setOnClickListener(v -> validateRegOrLog());
+        getBinding.tvRgOrLog.setOnClickListener(v -> setVisibleRegOrLog());
+        getBinding.tvChangeStatusReg.setOnClickListener(v -> setStatus());
+        getBinding.btnNext.setOnClickListener(v -> validateRegOrLog());
     }
 
     public void validateRegOrLog() {
-        String email = binding().etLoginReg.getText().toString();
-        String fullName = binding().etFio.getText().toString();
-        String passwordReg = binding().etPasswordReg.getText().toString();
-        String repPasswordReg = binding().etRepPasswordReg.getText().toString();
-        String groupOrDepartment = binding().etGroup.getText().toString();
-        String phone = binding().etPhone.getText().toString();
+        String email = getBinding.etLoginReg.getText().toString();
+        String fullName = getBinding.etFio.getText().toString();
+        String passwordReg = getBinding.etPasswordReg.getText().toString();
+        String repPasswordReg = getBinding.etRepPasswordReg.getText().toString();
+        String groupOrDepartment = getBinding.etGroup.getText().toString();
+        String phone = getBinding.etPhone.getText().toString();
         //
-        String emailLog = binding().etLogin.getText().toString();
-        String passwordLog = binding().etPassword.getText().toString();
+        String emailLog = getBinding.etLogin.getText().toString();
+        String passwordLog = getBinding.etPassword.getText().toString();
         if (isReg) {
             /////REGISTRATION
             if (!email.isEmpty() && !fullName.isEmpty() && !passwordReg.isEmpty()
@@ -129,13 +129,13 @@ public class AuthFragment extends BaseFragment<FragmentAuthBinding, AuthViewMode
     }
 
     private void openVerSentContainer() {
-        binding().waitContainer.setVisibility(View.VISIBLE);
-        binding().btnNext.setVisibility(View.GONE);
-        binding().btnOk.setOnClickListener(v -> {
-            binding().waitContainer.setVisibility(View.GONE);
-            binding().btnNext.setVisibility(View.VISIBLE);
-            binding().etLogin.setText(binding().etLoginReg.getText().toString());
-            binding().etPassword.setText(binding().etPasswordReg.getText().toString());
+        getBinding.waitContainer.setVisibility(View.VISIBLE);
+        getBinding.btnNext.setVisibility(View.GONE);
+        getBinding.btnOk.setOnClickListener(v -> {
+            getBinding.waitContainer.setVisibility(View.GONE);
+            getBinding.btnNext.setVisibility(View.VISIBLE);
+            getBinding.etLogin.setText(getBinding.etLoginReg.getText().toString());
+            getBinding.etPassword.setText(getBinding.etPasswordReg.getText().toString());
             setVisibleRegOrLog();
         });
     }
@@ -169,29 +169,29 @@ public class AuthFragment extends BaseFragment<FragmentAuthBinding, AuthViewMode
     private void setStatus() {
         if (!isAdmin) {
             isAdmin = true;
-            binding().etGroup.setHint("Кафедра");
-            binding().tvChangeStatusReg.setText(R.string.reg_as_student);
+            getBinding.etGroup.setHint("Кафедра");
+            getBinding.tvChangeStatusReg.setText(R.string.reg_as_student);
         } else {
             isAdmin = false;
-            binding().etGroup.setHint("Группа");
-            binding().tvChangeStatusReg.setText(R.string.reg_as_admin);
+            getBinding.etGroup.setHint("Группа");
+            getBinding.tvChangeStatusReg.setText(R.string.reg_as_admin);
 
         }
     }
 
     private void setVisibleRegOrLog() {
-        if (binding().containerReg.getVisibility() == View.VISIBLE) {
+        if (getBinding.containerReg.getVisibility() == View.VISIBLE) {
             isReg = false;
-            binding().containerLogin.setVisibility(View.VISIBLE);
-            binding().containerReg.setVisibility(View.GONE);
-            binding().tvRgOrLog.setText(R.string.not_have_an_account);
-            binding().tvTitle.setText(R.string.log_in_acc);
+            getBinding.containerLogin.setVisibility(View.VISIBLE);
+            getBinding.containerReg.setVisibility(View.GONE);
+            getBinding.tvRgOrLog.setText(R.string.not_have_an_account);
+            getBinding.tvTitle.setText(R.string.log_in_acc);
         } else {
             isReg = true;
-            binding().containerLogin.setVisibility(View.GONE);
-            binding().containerReg.setVisibility(View.VISIBLE);
-            binding().tvRgOrLog.setText(R.string.got_account);
-            binding().tvTitle.setText(R.string.create_acc);
+            getBinding.containerLogin.setVisibility(View.GONE);
+            getBinding.containerReg.setVisibility(View.VISIBLE);
+            getBinding.tvRgOrLog.setText(R.string.got_account);
+            getBinding.tvTitle.setText(R.string.create_acc);
         }
     }
 

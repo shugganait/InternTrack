@@ -21,4 +21,9 @@
         android:name="by.shug.interntrack.ui.auth.AuthFragment"
         android:label="fragment_auth"
         tools:layout="@layout/fragment_auth" />
+    <fragment
+        android:id="@+id/saveJobFragment"
+        android:name="by.shug.interntrack.ui.save_job.SaveJobFragment"
+        android:label="fragment_save_job"
+        tools:layout="@layout/fragment_save_job" />
 </navigation>

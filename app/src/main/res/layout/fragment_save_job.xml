@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.save_job.SaveJobFragment">
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="128dp"
+        android:text="@string/add_vacancy"
+        android:layout_gravity="center_horizontal"
+        android:textColor="@color/black"
+        android:textSize="24sp"
+        android:textStyle="bold"/>
+
+    <EditText
+        android:id="@+id/et_name"
+        style="@style/et_style"
+        android:hint="@string/company_name"
+        android:inputType="text"
+        android:layout_marginTop="64dp"
+        android:maxLines="1"
+        tools:ignore="TextFields" />
+    <EditText
+        android:id="@+id/et_position"
+        style="@style/et_style"
+        android:hint="@string/position"
+        android:inputType="text"
+        android:maxLines="1"
+        android:layout_marginTop="16dp"
+        tools:ignore="TextFields" />
+
+    <EditText
+        android:id="@+id/et_phone"
+        style="@style/et_style"
+        android:maxLength="12"
+        android:layout_marginTop="16dp"
+        android:hint="@string/phone_number"
+        android:inputType="text"
+        android:maxLines="1"
+        tools:ignore="TextFields" />
+
+    <EditText
+        android:id="@+id/et_address"
+        style="@style/et_style"
+        android:layout_marginTop="16dp"
+        android:hint="@string/address"
+        android:inputType="textEmailAddress"
+        android:maxLines="1"
+        tools:ignore="TextFields" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_ok"
+        style="@style/btn_style"
+        android:layout_marginTop="16dp"
+        android:text="@string/ok"
+        android:layout_marginVertical="46dp"/>
+
+</LinearLayout>

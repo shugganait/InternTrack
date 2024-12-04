@@ -1,5 +1,11 @@
 package by.shug.interntrack.repository;
 
+import static by.shug.interntrack.base.Constants.ADDRESS;
+import static by.shug.interntrack.base.Constants.COMPANYNAME;
+import static by.shug.interntrack.base.Constants.JOBS;
+import static by.shug.interntrack.base.Constants.PHONE;
+import static by.shug.interntrack.base.Constants.POSITION;
+import static by.shug.interntrack.base.Constants.STATUS;
 import static by.shug.interntrack.base.Constants.USERS;
 
 import android.util.Log;
@@ -13,11 +19,19 @@ import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import by.shug.interntrack.repository.model.Job;
 
 @Singleton
 public class FirebaseRepository {
@@ -77,6 +91,24 @@ public class FirebaseRepository {
                 .get();
     }
 
+    public Task<String> getUserStatus() {
+        return db.collection(USERS)
+                .document(Objects.requireNonNull(auth.getCurrentUser()).getUid())
+                .get()
+                .continueWith(task -> {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document != null && document.exists()) {
+                            return document.getString(STATUS);
+                        } else {
+                            throw new Exception("Пользователь не найден");
+                        }
+                    } else {
+                        throw task.getException();
+                    }
+                });
+    }
+
     public Task<Void> updateUserData(Map<String, Object> userData) {
         if (auth.getCurrentUser() == null) {
             return Tasks.forException(new Exception("User not logged in"));
@@ -84,5 +116,60 @@ public class FirebaseRepository {
         return db.collection(USERS)
                 .document(auth.getCurrentUser().getUid())
                 .update(userData);
+    }
+
+    public Task<QuerySnapshot> getUsersStudents() {
+        return FirebaseFirestore.getInstance()
+                .collection(USERS)
+                .whereEqualTo(STATUS, "student")
+                .get();
+    }
+
+    public void saveJob(String companyName, String position, String address, String phone, JobSaveCallback callback) {
+        Map<String, String> job = new HashMap<>();
+        job.put(COMPANYNAME, companyName);
+        job.put(POSITION, position);
+        job.put(ADDRESS, address);
+        job.put(PHONE, phone);
+
+        db.collection(JOBS)
+                .add(job)
+                .addOnSuccessListener(documentReference -> callback.onSuccess())
+                .addOnFailureListener(e -> {
+                    Log.e("Firestore", "Ошибка сохранения вакансии", e);
+                    callback.onError(e);
+                });
+    }
+
+    public void getJobs(JobsCallback callback) {
+        db.collection("jobs")
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    List<Job> jobList = new ArrayList<>();
+                    for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                        String companyName = documentSnapshot.getString(COMPANYNAME);
+                        String position = documentSnapshot.getString(POSITION);
+                        String address = documentSnapshot.getString(ADDRESS);
+                        String phone = documentSnapshot.getString(PHONE);
+
+                        jobList.add(new Job(companyName, position, address, phone));
+                    }
+                    callback.onSuccess(jobList);  // Отправляем результат в callback
+                })
+                .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+    }
+
+    // Интерфейс для передачи данных
+    public interface JobsCallback {
+        void onSuccess(List<Job> jobList);
+
+        void onFailure(String errorMessage);
+    }
+
+
+    public interface JobSaveCallback {
+        void onSuccess();
+
+        void onError(Exception e);
     }
 }

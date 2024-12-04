@@ -29,4 +29,14 @@
     <string name="btn_login">Войти</string>
     <string name="dots">.....................</string>
     <string name="save">Сохранить</string>
+    <string name="vacancy">Вакансии</string>
+    <string name="students">Студенты</string>
+    <string name="add">Add</string>
+    <string name="group_is">Группа:</string>
+    <string name="company_name">Название компании</string>
+    <string name="address">Адрес</string>
+    <string name="contacts">Контакты</string>
+    <string name="position">Должность</string>
+    <string name="add_vacancy">Добавьте вакансию</string>
+    <string name="position_is">Должность:</string>
 </resources>
