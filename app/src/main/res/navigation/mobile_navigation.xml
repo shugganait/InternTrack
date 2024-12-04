@@ -9,7 +9,8 @@
         android:id="@+id/navigation_main"
         android:name="by.shug.interntrack.ui.main.MainFragment"
         android:label="@string/title_main"
-        tools:layout="@layout/fragment_main" />
+        tools:layout="@layout/fragment_main" >
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_dashboard"

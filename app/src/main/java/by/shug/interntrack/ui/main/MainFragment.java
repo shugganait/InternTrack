@@ -83,7 +83,6 @@ public class MainFragment extends BaseFragment<FragmentMainBinding, MainViewMode
                 getBinding.rvVacancy.setVisibility(View.VISIBLE);
                 getBinding.loadingContainer.setVisibility(View.VISIBLE);
                 getJobs();
-                getBinding.fab.setVisibility(View.VISIBLE);
             }
         });
     }
@@ -113,6 +112,9 @@ public class MainFragment extends BaseFragment<FragmentMainBinding, MainViewMode
                         getBinding.rbVacancy.setChecked(true);
                         getBinding.radioGroup.setVisibility(View.VISIBLE);
                         getBinding.rbStudents.setVisibility(View.GONE);
+                        getBinding.rvVacancy.setVisibility(View.VISIBLE);
+                        getBinding.loadingContainer.setVisibility(View.VISIBLE);
+                        getJobs();
                     }
                 })
                 .addOnFailureListener(e -> {

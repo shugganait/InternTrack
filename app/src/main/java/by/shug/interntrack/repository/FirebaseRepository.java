@@ -142,7 +142,7 @@ public class FirebaseRepository {
     }
 
     public void getJobs(JobsCallback callback) {
-        db.collection("jobs")
+        db.collection(JOBS)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     List<Job> jobList = new ArrayList<>();
