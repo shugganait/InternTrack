@@ -1,5 +1,6 @@
 package by.shug.interntrack.ui.main;
 
+import android.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,18 +23,21 @@ import by.shug.interntrack.repository.FirebaseRepository;
 import by.shug.interntrack.repository.model.Job;
 import by.shug.interntrack.repository.model.User;
 import by.shug.interntrack.ui.main.adapter.JobsAdapter;
+import by.shug.interntrack.ui.main.adapter.OnJobClickListener;
+import by.shug.interntrack.ui.main.adapter.OnUserClickListener;
 import by.shug.interntrack.ui.main.adapter.UserAdapter;
 import dagger.hilt.android.AndroidEntryPoint;
 
 
 @AndroidEntryPoint
-public class MainFragment extends BaseFragment<FragmentMainBinding, MainViewModel> {
+public class MainFragment extends BaseFragment<FragmentMainBinding, MainViewModel> implements OnUserClickListener, OnJobClickListener {
 
     private NavController navController;
     private UserAdapter userAdapter;
     private JobsAdapter jobsAdapter;
     private boolean isAdmin;
-    private boolean isAuth;
+    private boolean isChoosingJob = false;
+    private String userForJob;
 
     @Override
     protected FragmentMainBinding inflateBinding(LayoutInflater inflater, ViewGroup container) {
@@ -58,9 +62,9 @@ public class MainFragment extends BaseFragment<FragmentMainBinding, MainViewMode
         getBinding.rvStudents.setLayoutManager(new LinearLayoutManager(requireContext()));
         getBinding.rvVacancy.setLayoutManager(new LinearLayoutManager(requireContext()));
 
-        userAdapter = new UserAdapter(new ArrayList<>());
+        userAdapter = new UserAdapter(this);
         getBinding.rvStudents.setAdapter(userAdapter);
-        jobsAdapter = new JobsAdapter(new ArrayList<>());
+        jobsAdapter = new JobsAdapter(this);
         getBinding.rvVacancy.setAdapter(jobsAdapter);
     }
 
@@ -78,21 +82,32 @@ public class MainFragment extends BaseFragment<FragmentMainBinding, MainViewMode
                 getBinding.loadingContainer.setVisibility(View.VISIBLE);
                 getUsersStudents();
                 getBinding.fab.setVisibility(View.GONE);
+                getBinding.btnCancel.setVisibility(View.GONE);
             } else if (checkedId == getBinding.rbVacancy.getId() && isAdmin) {
                 getBinding.rvStudents.setVisibility(View.GONE);
                 getBinding.rvVacancy.setVisibility(View.VISIBLE);
                 getBinding.loadingContainer.setVisibility(View.VISIBLE);
+                if (isChoosingJob) {
+                    getBinding.fab.setVisibility(View.GONE);
+                    getBinding.btnCancel.setVisibility(View.VISIBLE);
+                } else {
+                    getBinding.fab.setVisibility(View.VISIBLE);
+                    getBinding.btnCancel.setVisibility(View.GONE);
+                }
                 getJobs();
             }
+        });
+        getBinding.btnCancel.setOnClickListener(v -> {
+            isChoosingJob = false;
+            getBinding.btnCancel.setVisibility(View.GONE);
+            getBinding.fab.setVisibility(View.VISIBLE);
         });
     }
 
     private void checkIsAuth() {
         if (viewModel.getCurrentUser() != null && viewModel.getCurrentUser().isEmailVerified()) {
-            isAuth = true;
             getBinding.loginSuggest.setVisibility(View.GONE);
         } else {
-            isAuth = false;
             getBinding.loginSuggest.setVisibility(View.VISIBLE);
         }
     }
@@ -102,7 +117,6 @@ public class MainFragment extends BaseFragment<FragmentMainBinding, MainViewMode
         viewModel.getUserStatus()
                 .addOnSuccessListener(status -> {
                     getBinding.loadingContainer.setVisibility(View.GONE);
-                    showToast("Статус: " + status);
                     isAdmin = status.equals("admin");
                     if (isAdmin) {
                         getBinding.rbStudents.setChecked(true);
@@ -153,12 +167,72 @@ public class MainFragment extends BaseFragment<FragmentMainBinding, MainViewMode
                 jobsAdapter.setJobsList(jobList);
                 getBinding.loadingContainer.setVisibility(View.GONE);
             }
+
             @Override
             public void onFailure(String errorMessage) {
-                Toast.makeText(getContext(), "Error: " + errorMessage, Toast.LENGTH_SHORT).show();
+                Log.e("shug", "Error: " + errorMessage);
                 getBinding.loadingContainer.setVisibility(View.GONE);
             }
         });
+    }
+
+    private void linkJobToUser(String userID, String jobId) {
+        viewModel.linkJobToUser(userID, jobId, new FirebaseRepository.UserUpdateCallback() {
+            @Override
+            public void onSuccess() {
+                showToast("Пользователю назначена работа");
+                getBinding.btnCancel.setVisibility(View.GONE);
+                getBinding.fab.setVisibility(View.VISIBLE);
+                isChoosingJob = false;
+                getBinding.loadingContainer.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                Log.e("shug", "Failed to link job: " + e.getMessage());
+                getBinding.loadingContainer.setVisibility(View.GONE);
+            }
+        });
+    }
+
+    @Override
+    public void onUserClick(User data) {
+        if (isAdmin) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setMessage("Назначить работу к \"" + data.getFullName() + "\"?")
+                    .setCancelable(false)
+                    .setPositiveButton("Принять", (dialog, id) -> {
+                        isChoosingJob = true;
+                        getBinding.rbVacancy.setChecked(true);
+                        userForJob = data.getUid();
+                    })
+                    .setNegativeButton("Отмена", (dialog, id) -> {
+                    });
+
+            AlertDialog alert = builder.create();
+            alert.show();
+        }
+    }
+
+    @Override
+    public void onUserLongClick(User data) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setMessage("Посмотреть отчеты \"" + data.getFullName() + "\"?")
+                .setCancelable(false)
+                .setPositiveButton("Да", (dialog, id) -> navController.navigate(R.id.reportsFragment))
+                .setNegativeButton("Отмена", (dialog, id) -> {});
+
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    @Override
+    public void onJobClick(Job data) {
+        if (isChoosingJob) {
+            getBinding.loadingContainer.setVisibility(View.VISIBLE);
+            getBinding.btnCancel.setVisibility(View.GONE);
+            linkJobToUser(userForJob, data.getJobID());
+        }
     }
 
     private void showToast(String msg) {

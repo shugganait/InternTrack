@@ -27,4 +27,9 @@
         android:name="by.shug.interntrack.ui.save_job.SaveJobFragment"
         android:label="fragment_save_job"
         tools:layout="@layout/fragment_save_job" />
+    <fragment
+        android:id="@+id/reportsFragment"
+        android:name="by.shug.interntrack.ui.reports.ReportsFragment"
+        android:label="fragment_reports"
+        tools:layout="@layout/fragment_reports" />
 </navigation>

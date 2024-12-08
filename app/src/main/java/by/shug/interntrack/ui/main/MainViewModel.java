@@ -40,4 +40,8 @@ public class MainViewModel extends ViewModel {
     public void getJobs(FirebaseRepository.JobsCallback callback) {
         repository.getJobs(callback);
     }
+
+    public void linkJobToUser(String userId, String jobId, FirebaseRepository.UserUpdateCallback callback) {
+        repository.linkJobToUser(userId, jobId, callback);
+    }
 }

@@ -3,8 +3,10 @@ package by.shug.interntrack.ui.dashboard;
 import static by.shug.interntrack.base.Constants.EMAIL;
 import static by.shug.interntrack.base.Constants.FULLNAME;
 import static by.shug.interntrack.base.Constants.GROUP;
+import static by.shug.interntrack.base.Constants.JOBID;
 import static by.shug.interntrack.base.Constants.PHONE;
 import static by.shug.interntrack.base.Constants.STATUS;
+import static by.shug.interntrack.base.Constants.UID;
 
 import android.app.Activity;
 import android.content.Context;
@@ -20,6 +22,7 @@ import android.widget.Toast;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -27,6 +30,8 @@ import java.util.Objects;
 import by.shug.interntrack.R;
 import by.shug.interntrack.base.BaseFragment;
 import by.shug.interntrack.databinding.FragmentDashboardBinding;
+import by.shug.interntrack.repository.FirebaseRepository;
+import by.shug.interntrack.repository.model.Job;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
@@ -34,11 +39,14 @@ public class DashboardFragment extends BaseFragment<FragmentDashboardBinding, Da
 
     private NavController navController;
     private boolean isAuth;
+    private boolean isAdmin;
     private String fullName;
+    private String uid;
     private String email;
     private String phone;
     private String group;
     private String status;
+    private String jobId = "null";
 
     @Override
     protected FragmentDashboardBinding inflateBinding(LayoutInflater inflater, ViewGroup container) {
@@ -72,6 +80,10 @@ public class DashboardFragment extends BaseFragment<FragmentDashboardBinding, Da
                             phone = (String) userData.get(PHONE);
                             group = (String) userData.get(GROUP);
                             status = (String) userData.get(STATUS);
+                            if (userData.get(JOBID) != null) {
+                                jobId = (String) userData.get(JOBID);
+                            }
+                            uid = (String) userData.get(UID);
 
                             getBinding.etLogin.setText(email);
                             getBinding.etFio.setText(fullName);
@@ -79,9 +91,17 @@ public class DashboardFragment extends BaseFragment<FragmentDashboardBinding, Da
                             getBinding.etPhone.setText(phone);
                             if (status.equals("admin")) {
                                 getBinding.tvStatus.setText("Админ*");
+                                isAdmin = true;
                             } else {
                                 getBinding.tvStatus.setText("Студент*");
+                                getBinding.btnGrades.setVisibility(View.VISIBLE);
+                                isAdmin = false;
                             }
+                        }
+
+                        if (!Objects.equals(jobId, "null")) {
+                            setJobIfExists();
+                        } else {
                             getBinding.loadingContainer.setVisibility(View.GONE);
                         }
                     } else {
@@ -97,18 +117,27 @@ public class DashboardFragment extends BaseFragment<FragmentDashboardBinding, Da
             viewModel.logout();
             checkIsAuth();
         });
-        getBinding.btnLogin.setOnClickListener(v -> navController.navigate(R.id.authFragment));
+        getBinding.btnLogin.setOnClickListener(v -> {
+            navController.navigate(R.id.authFragment);
+            jobId = "null";
+        });
         getBinding.btnSave.setOnClickListener(v -> updateUserData());
         getBinding.etPhone.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
+            }
+
             @Override
-            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {}
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+            }
+
             @Override
             public void afterTextChanged(Editable editable) {
                 String changedPhone = getBinding.etPhone.getText().toString();
                 if (!Objects.equals(phone, changedPhone)) {
-                    getBinding.btnSave.setVisibility(View.VISIBLE);
+                    if (getBinding.loadingContainer.getVisibility() == View.GONE) {
+                        getBinding.btnSave.setVisibility(View.VISIBLE);
+                    }
                 } else {
                     getBinding.btnSave.setVisibility(View.GONE);
                 }
@@ -116,14 +145,20 @@ public class DashboardFragment extends BaseFragment<FragmentDashboardBinding, Da
         });
         getBinding.etGroup.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
+            }
+
             @Override
-            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {}
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+            }
+
             @Override
             public void afterTextChanged(Editable editable) {
                 String changedGroup = getBinding.etGroup.getText().toString();
                 if (!Objects.equals(group, changedGroup)) {
-                    getBinding.btnSave.setVisibility(View.VISIBLE);
+                    if (getBinding.loadingContainer.getVisibility() == View.GONE) {
+                        getBinding.btnSave.setVisibility(View.VISIBLE);
+                    }
                 } else {
                     getBinding.btnSave.setVisibility(View.GONE);
                 }
@@ -131,17 +166,95 @@ public class DashboardFragment extends BaseFragment<FragmentDashboardBinding, Da
         });
         getBinding.etFio.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
+            }
+
             @Override
-            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {}
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+            }
+
             @Override
             public void afterTextChanged(Editable editable) {
                 String changedFullName = getBinding.etFio.getText().toString();
                 if (!Objects.equals(fullName, changedFullName)) {
-                    getBinding.btnSave.setVisibility(View.VISIBLE);
+                    if (getBinding.loadingContainer.getVisibility() == View.GONE) {
+                        getBinding.btnSave.setVisibility(View.VISIBLE);
+                    }
                 } else {
                     getBinding.btnSave.setVisibility(View.GONE);
                 }
+            }
+        });
+        getBinding.etReport.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                String changedReport = getBinding.etReport.getText().toString();
+                if (!changedReport.isEmpty()) {
+                    getBinding.btnSendReport.setVisibility(View.VISIBLE);
+                } else {
+                    getBinding.btnSendReport.setVisibility(View.GONE);
+                }
+            }
+        });
+        getBinding.btnSendReport.setOnClickListener(v -> {
+            getBinding.loadingContainer.setVisibility(View.VISIBLE);
+            getBinding.btnSave.setVisibility(View.GONE);
+            sendReport();
+        });
+    }
+
+    private void setJobIfExists() {
+        viewModel.fetchJobById(jobId, new FirebaseRepository.JobCallback() {
+            @Override
+            public void onSuccess(Job job) {
+                getBinding.tvJob.setVisibility(View.VISIBLE);
+                getBinding.jobContainer.setVisibility(View.VISIBLE);
+                getBinding.etReport.setVisibility(View.VISIBLE);
+                getBinding.tvName.setText(job.getCompanyName());
+                getBinding.tvPosition.setText(job.getPosition());
+                getBinding.tvAddress.setText(job.getAddress());
+                getBinding.tvPhone.setText(job.getPhoneNumber());
+                Toast.makeText(requireContext(), job.getCompanyName(), Toast.LENGTH_SHORT).show();
+                getBinding.loadingContainer.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onFailure(String errorMessage) {
+                if (!isAdmin) {
+                    getBinding.tvJob.setText(R.string.nochosen_job);
+                    getBinding.tvJob.setVisibility(View.VISIBLE);
+                }
+                getBinding.loadingContainer.setVisibility(View.GONE);
+            }
+        });
+    }
+
+    private void sendReport() {
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH) + 1;
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        String currentDate = (day + "/" + month + "/" + year);
+        String reportContent = getBinding.etReport.getText().toString();
+        String companyName = getBinding.tvName.getText().toString();
+        String position = getBinding.tvPosition.getText().toString();
+
+        viewModel.addUserReport(uid, fullName, currentDate, reportContent, companyName, position, task -> {
+            if (task.isSuccessful()) {
+                Toast.makeText(getContext(), "Отчет отправлен", Toast.LENGTH_SHORT).show();
+                getBinding.etReport.setText("");
+                getBinding.loadingContainer.setVisibility(View.GONE);
+            } else {
+                getBinding.loadingContainer.setVisibility(View.GONE);
+                Log.e("shug", "Failed to add report: " + Objects.requireNonNull(task.getException()).getMessage());
             }
         });
     }

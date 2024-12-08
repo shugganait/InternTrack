@@ -51,26 +51,17 @@ dependencies {
     implementation(libs.lifecycle.viewmodel.ktx)
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.ui)
-    implementation(libs.firebase.auth)
-    implementation(libs.firebase.firestore)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
 
-    // Retrofit
-    implementation(libs.retrofit)
-    implementation(libs.converter.gson)////////////
-
-    // Coroutines
-    implementation(libs.kotlinx.coroutines.android)
-    implementation(libs.kotlinx.coroutines.core)/////////////
+    //FireBase
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.firestore)
 
     //Hilt
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
-
-    //Glide
-    implementation(libs.glide)
 
     // Fragment
     implementation(libs.androidx.fragment.ktx)

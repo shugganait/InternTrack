@@ -5,15 +5,17 @@ public class User {
     private String group;
     private String phoneNumber;
     private String email;
+    private String uid;
 
     public User() {
     }
 
-    public User(String fullName, String group, String phone, String email) {
+    public User(String fullName, String group, String phone, String email, String uid) {
         this.fullName = fullName;
         this.group = group;
         this.phoneNumber = phone;
         this.email = email;
+        this.uid = uid;
     }
 
     public String getFullName() {
@@ -42,6 +44,10 @@ public class User {
 
     public String getEmail() {
         return email;
+    }
+
+    public String getUid() {
+        return uid;
     }
 
     public void setEmail(String email) {

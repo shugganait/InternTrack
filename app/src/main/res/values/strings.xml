@@ -39,4 +39,10 @@
     <string name="position">Должность</string>
     <string name="add_vacancy">Добавьте вакансию</string>
     <string name="position_is">Должность:</string>
+    <string name="cancel">Отмена</string>
+    <string name="chosen_job">Вам назначена работа:</string>
+    <string name="nochosen_job">Для вас нету назначенной работы</string>
+    <string name="report">Отчет</string>
+    <string name="send_report">Отправить отчет</string>
+    <string name="my_grades">Мои оценки</string>
 </resources>

@@ -1,5 +1,6 @@
 package by.shug.interntrack.ui.main.adapter;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -14,11 +15,13 @@ import by.shug.interntrack.repository.model.User;
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder> {
 
     private List<User> userList;
+    private final OnUserClickListener userClickListener;
 
-    public UserAdapter(List<User> userList) {
-        this.userList = userList;
+    public UserAdapter(OnUserClickListener userClickListener) {
+        this.userClickListener = userClickListener;
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void setUserList(List<User> userList) {
         this.userList = userList;
         notifyDataSetChanged();
@@ -46,7 +49,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         return userList != null ? userList.size() : 0;
     }
 
-    static class UserViewHolder extends RecyclerView.ViewHolder {
+    public class UserViewHolder extends RecyclerView.ViewHolder {
 
         private final ItemStudentsBinding binding;
 
@@ -56,6 +59,17 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         }
 
         public void bind(User user) {
+            binding.getRoot().setOnClickListener(v -> {
+                if (userClickListener != null) {
+                    userClickListener.onUserClick(user);
+                }
+            });
+            binding.getRoot().setOnLongClickListener(view -> {
+                if (userClickListener != null) {
+                    userClickListener.onUserLongClick(user);
+                }
+                return true;
+            });
             binding.tvName.setText(user.getFullName());
             binding.tvGroup.setText(user.getGroup());
             binding.tvPhone.setText(user.getPhoneNumber());

@@ -5,14 +5,17 @@ public class Job {
     private String position;
     private String address;
     private String phoneNumber;
+    private String jobID;
 
-    public Job() {}
+    public Job() {
+    }
 
-    public Job(String companyName, String position, String address, String phone) {
+    public Job(String companyName, String position, String address, String phone, String jobId) {
         this.companyName = companyName;
         this.position = position;
         this.address = address;
         this.phoneNumber = phone;
+        this.jobID = jobId;
     }
 
     public String getCompanyName() {
@@ -21,6 +24,14 @@ public class Job {
 
     public void setCompanyName(String companyName) {
         this.companyName = companyName;
+    }
+
+    public String getJobID() {
+        return jobID;
+    }
+
+    public void setJobID(String jobID) {
+        this.jobID = jobID;
     }
 
     public String getPosition() {
