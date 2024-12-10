@@ -1,11 +1,13 @@
 package by.shug.interntrack.ui.reports.adapter;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import by.shug.interntrack.databinding.ItemReportsBinding;
@@ -13,13 +15,16 @@ import by.shug.interntrack.repository.model.Report;
 
 public class ReportsAdapter extends RecyclerView.Adapter<ReportsAdapter.ReportViewHolder> {
 
-    private List<Report> reportList;
+    private final List<Report> reports = new ArrayList<>();
+
+    @SuppressLint("NotifyDataSetChanged")
+    public void setReports(List<Report> newReports) {
+        reports.clear();
+        reports.addAll(newReports);
+        notifyDataSetChanged();
+    }
 
     public ReportsAdapter() {}
-
-    public void setReportList(List<Report> reports) {
-        this.reportList = reports;
-    }
 
     @NonNull
     @Override
@@ -32,13 +37,13 @@ public class ReportsAdapter extends RecyclerView.Adapter<ReportsAdapter.ReportVi
 
     @Override
     public void onBindViewHolder(@NonNull ReportViewHolder holder, int position) {
-        Report report = reportList.get(position);
+        Report report = reports.get(position);
         holder.bind(report);
     }
 
     @Override
     public int getItemCount() {
-        return reportList.size();
+        return reports.size();
     }
 
     static class ReportViewHolder extends RecyclerView.ViewHolder {
@@ -50,8 +55,8 @@ public class ReportsAdapter extends RecyclerView.Adapter<ReportsAdapter.ReportVi
         }
 
         public void bind(Report report) {
-//            binding.tvDate.setText(report.getDate());
-//            binding.tvContent.setText(report.getContent());
+            binding.tvDate.setText(report.getDate());
+            binding.tvContent.setText(report.getContent());
         }
     }
 }

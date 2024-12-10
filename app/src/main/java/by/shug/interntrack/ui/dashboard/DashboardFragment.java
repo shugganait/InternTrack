@@ -209,6 +209,7 @@ public class DashboardFragment extends BaseFragment<FragmentDashboardBinding, Da
             getBinding.btnSave.setVisibility(View.GONE);
             sendReport();
         });
+        getBinding.btnGrades.setOnClickListener(v -> navController.navigate(R.id.gradesFragment));
     }
 
     private void setJobIfExists() {

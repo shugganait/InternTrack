@@ -4,6 +4,8 @@ import static by.shug.interntrack.base.Constants.ADDRESS;
 import static by.shug.interntrack.base.Constants.COMPANYNAME;
 import static by.shug.interntrack.base.Constants.DATE;
 import static by.shug.interntrack.base.Constants.FULLNAME;
+import static by.shug.interntrack.base.Constants.GRADE;
+import static by.shug.interntrack.base.Constants.GRADES;
 import static by.shug.interntrack.base.Constants.JOB;
 import static by.shug.interntrack.base.Constants.JOBID;
 import static by.shug.interntrack.base.Constants.JOBS;
@@ -15,6 +17,7 @@ import static by.shug.interntrack.base.Constants.STATUS;
 import static by.shug.interntrack.base.Constants.UID;
 import static by.shug.interntrack.base.Constants.USERREPORTS;
 import static by.shug.interntrack.base.Constants.USERS;
+import static by.shug.interntrack.base.Constants.USER_GRADES;
 
 import android.util.Log;
 
@@ -285,6 +288,81 @@ public class FirebaseRepository {
         db.collection(USERREPORTS).document(userId).set(newUserData).addOnCompleteListener(callback);
     }
 
+    //Достает репорты студента
+    public void getUserReports(String userId, OnCompleteListener<DocumentSnapshot> callback) {
+        db.collection(USERREPORTS)
+                .document(userId)
+                .get()
+                .addOnCompleteListener(callback);
+    }
+
+    // Добавление новой оценки пользователю
+    public void addUserGrade(String userId, String name, String companyName, String position, String grade, OnCompleteListener<Void> callback) {
+        db.collection(USER_GRADES)
+                .document(userId)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        DocumentSnapshot documentSnapshot = task.getResult();
+                        List<Map<String, Object>> existingGrades = (List<Map<String, Object>>) documentSnapshot.get(GRADES);
+
+                        // Если оценок нет, создаем новый список
+                        if (existingGrades == null) {
+                            existingGrades = new ArrayList<>();
+                        }
+
+                        // Создаем новый объект для оценки
+                        Map<String, Object> newGrade = new HashMap<>();
+                        newGrade.put(COMPANYNAME, companyName);
+                        newGrade.put(POSITION, position);
+                        newGrade.put(GRADE, grade);
+
+                        // Добавляем оценку в начало списка
+                        existingGrades.add(0, newGrade);
+
+                        // Обновляем коллекцию с новыми оценками
+                        Map<String, Object> userData = new HashMap<>();
+                        userData.put(FULLNAME, documentSnapshot.get(FULLNAME));
+                        userData.put(GRADES, existingGrades);
+
+                        // Сохраняем обновленный объект пользователя в Firebase
+                        db.collection(USER_GRADES)
+                                .document(userId)
+                                .set(userData)
+                                .addOnCompleteListener(callback);
+                    } else {
+                        // Если пользователя нет, создаем новый
+                        createNewUserWithGrade(userId, name, companyName, position, grade, callback);
+                    }
+                });
+    }
+
+    // Создание нового пользователя с оценкой, если такого нет в базе
+    private void createNewUserWithGrade(String userId, String name, String companyName, String position, String grade, OnCompleteListener<Void> callback) {
+        Map<String, Object> newUserData = new HashMap<>();
+        newUserData.put(FULLNAME, name); // Укажите имя по умолчанию или параметр
+        newUserData.put(GRADES, new ArrayList<Map<String, Object>>() {{
+            Map<String, Object> newGrade = new HashMap<>();
+            newGrade.put(COMPANYNAME, companyName);
+            newGrade.put(POSITION, position);
+            newGrade.put(GRADE, grade);
+            add(newGrade);
+        }});
+
+        // Добавляем нового пользователя в Firebase
+        db.collection(USER_GRADES)
+                .document(userId)
+                .set(newUserData)
+                .addOnCompleteListener(callback);
+    }
+
+    // Получение оценок пользователя
+    public void getUserGrades(String userId, OnCompleteListener<DocumentSnapshot> callback) {
+        db.collection(USER_GRADES)
+                .document(userId)
+                .get()
+                .addOnCompleteListener(callback);
+    }
 
     // Интерфейс для передачи данных
     public interface JobCallback {

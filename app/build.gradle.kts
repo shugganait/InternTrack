@@ -3,7 +3,6 @@ plugins {
     kotlin("android")
     kotlin("kapt")
     id("com.google.dagger.hilt.android")
-    id("androidx.navigation.safeargs.kotlin")
     alias(libs.plugins.google.gms.google.services)
 }
 
@@ -66,7 +65,4 @@ dependencies {
     // Fragment
     implementation(libs.androidx.fragment.ktx)
 
-    //OkHttp
-    implementation(libs.logging.interceptor)
-    implementation(libs.javax.annotation.api)
 }

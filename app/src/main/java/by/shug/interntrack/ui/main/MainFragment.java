@@ -1,6 +1,7 @@
 package by.shug.interntrack.ui.main;
 
 import android.app.AlertDialog;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,6 +33,7 @@ import dagger.hilt.android.AndroidEntryPoint;
 @AndroidEntryPoint
 public class MainFragment extends BaseFragment<FragmentMainBinding, MainViewModel> implements OnUserClickListener, OnJobClickListener {
 
+    public static String MAIN_UID = "uid";
     private NavController navController;
     private UserAdapter userAdapter;
     private JobsAdapter jobsAdapter;
@@ -180,7 +182,7 @@ public class MainFragment extends BaseFragment<FragmentMainBinding, MainViewMode
         viewModel.linkJobToUser(userID, jobId, new FirebaseRepository.UserUpdateCallback() {
             @Override
             public void onSuccess() {
-                showToast("Пользователю назначена работа");
+                Toast.makeText(requireContext(), "Пользователю назначена работа", Toast.LENGTH_SHORT).show();
                 getBinding.btnCancel.setVisibility(View.GONE);
                 getBinding.fab.setVisibility(View.VISIBLE);
                 isChoosingJob = false;
@@ -219,8 +221,13 @@ public class MainFragment extends BaseFragment<FragmentMainBinding, MainViewMode
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setMessage("Посмотреть отчеты \"" + data.getFullName() + "\"?")
                 .setCancelable(false)
-                .setPositiveButton("Да", (dialog, id) -> navController.navigate(R.id.reportsFragment))
-                .setNegativeButton("Отмена", (dialog, id) -> {});
+                .setPositiveButton("Да", (dialog, id) -> {
+                    Bundle bundle = new Bundle();
+                    bundle.putString(MAIN_UID, data.getUid());
+                    navController.navigate(R.id.reportsFragment, bundle);
+                    })
+                .setNegativeButton("Отмена", (dialog, id) -> {
+                });
 
         AlertDialog alert = builder.create();
         alert.show();
@@ -233,9 +240,5 @@ public class MainFragment extends BaseFragment<FragmentMainBinding, MainViewMode
             getBinding.btnCancel.setVisibility(View.GONE);
             linkJobToUser(userForJob, data.getJobID());
         }
-    }
-
-    private void showToast(String msg) {
-        Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show();
     }
 }

@@ -9,8 +9,7 @@
         android:id="@+id/navigation_main"
         android:name="by.shug.interntrack.ui.main.MainFragment"
         android:label="@string/title_main"
-        tools:layout="@layout/fragment_main" >
-    </fragment>
+        tools:layout="@layout/fragment_main"/>
 
     <fragment
         android:id="@+id/navigation_dashboard"
@@ -31,5 +30,10 @@
         android:id="@+id/reportsFragment"
         android:name="by.shug.interntrack.ui.reports.ReportsFragment"
         android:label="fragment_reports"
-        tools:layout="@layout/fragment_reports" />
+        tools:layout="@layout/fragment_reports"/>
+    <fragment
+        android:id="@+id/gradesFragment"
+        android:name="by.shug.interntrack.ui.grades.GradesFragment"
+        android:label="fragment_grades"
+        tools:layout="@layout/fragment_grades" />
 </navigation>

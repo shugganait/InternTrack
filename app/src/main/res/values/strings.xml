@@ -45,4 +45,9 @@
     <string name="report">Отчет</string>
     <string name="send_report">Отправить отчет</string>
     <string name="my_grades">Мои оценки</string>
+    <string name="set_grade">Поставить оценку</string>
+    <string name="write_grade">Напишите оценку</string>
+    <string name="your_grades">Ваши оценки</string>
+    <string name="company_is">Компания:</string>
+    <string name="garde_is">Оценка:</string>
 </resources>
